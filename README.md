@@ -13,9 +13,10 @@ This project is a simple web application designed to predict whether livestock i
 ## Features
 
 1. **Data Loading & Preprocessing**: Loads the CSV, encodes categorical data, and scales numerical values.
-2. **Multiple Models**: Implements KNN, Decision Tree, and Random Forest.
-3. **Evaluation**: Displays accuracy for each model and includes several analysis graphs (Count plot, Heatmap, K vs Accuracy).
-4. **Prediction**: A functional form where you can input livestock data and get an instant prediction using the Random Forest model.
+2. **Multiple Models**: Implements **Decision Tree**, **Random Forest** (Supervised), and **K-Means Clustering** (Unsupervised).
+3. **Evaluation**: Displays performance metrics (Accuracy, Precision, Recall, F1) for supervised models and Cluster Purity/Silhouette Score for unsupervised clustering.
+4. **Visualizations**: Includes several analysis graphs (Count plot, Heatmap, Supervised Comparison, ROC Curves, Feature Importance, K-Means Clusters, and Elbow Method).
+5. **Prediction**: A functional form where you can input livestock data and get an instant prediction using the Random Forest model.
 
 ## How to Run
 
