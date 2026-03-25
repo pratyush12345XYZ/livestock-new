@@ -19,6 +19,9 @@
         th { background-color: #f8f9fa; color: #2c3e50; }
         .method-card { background: #fdfdfd; border: 1px solid #eee; padding: 15px; margin-bottom: 15px; border-radius: 4px; }
         .method-card h3 { color: #3498db; margin-top: 0; }
+        .badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 0.75em; font-weight: bold; margin-left: 8px; vertical-align: middle; }
+        .badge-supervised { background: #d4edda; color: #155724; }
+        .badge-unsupervised { background: #fff3cd; color: #856404; }
         footer { text-align: center; padding: 20px; color: #888; font-size: 0.8em; }
     </style>
 </head>
@@ -45,21 +48,21 @@
 
         <div class="section">
             <h2>2. Methodology</h2>
-            <p>Our system utilizes three popular supervised learning algorithms for classification:</p>
-            
+            <p>Our system uses <strong>two supervised</strong> and <strong>one unsupervised</strong> machine learning algorithm to analyze livestock health data:</p>
+
             <div class="method-card">
-                <h3>K-Nearest Neighbors (KNN)</h3>
-                <p>A simple, instance-based learning algorithm that classifies a data point based on how its neighbors are classified. It is highly sensitive to the scale of features, so we apply Standard Scaling.</p>
+                <h3>Decision Tree <span class="badge badge-supervised">Supervised</span></h3>
+                <p>A tree-like model of decisions. It breaks down a dataset into smaller and smaller subsets while at the same time an associated decision tree is incrementally developed. It is interpretable and handles both numerical and categorical data well.</p>
             </div>
 
             <div class="method-card">
-                <h3>Decision Tree</h3>
-                <p>A tree-like model of decisions. It breaks down a dataset into smaller and smaller subsets while at the same time an associated decision tree is incrementally developed.</p>
-            </div>
-
-            <div class="method-card">
-                <h3>Random Forest</h3>
+                <h3>Random Forest <span class="badge badge-supervised">Supervised</span></h3>
                 <p>An ensemble learning method that operates by constructing a multitude of decision trees at training time and outputting the class that is the mode of the classes of the individual trees. It is robust and usually provides the best accuracy.</p>
+            </div>
+
+            <div class="method-card">
+                <h3>K-Means Clustering <span class="badge badge-unsupervised">Unsupervised</span></h3>
+                <p>An unsupervised clustering algorithm that partitions data into K groups based on feature similarity, without using labels. It helps discover natural groupings in the data and can reveal hidden patterns that supervised methods might miss. We use it to see if the data naturally separates into "Healthy" and "Diseased" clusters.</p>
             </div>
         </div>
     </div>

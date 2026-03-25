@@ -17,6 +17,10 @@
         .stat-card { background: #f8f9fa; border: 1px solid #ddd; padding: 20px; border-radius: 8px; text-align: center; }
         .stat-card h3 { margin-top: 0; color: #34495e; }
         .stat-value { font-size: 1.5em; font-weight: bold; color: #3498db; }
+        .stat-label { font-size: 0.85em; color: #777; margin-top: 4px; }
+        .badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 0.7em; font-weight: bold; margin-left: 6px; vertical-align: middle; }
+        .badge-supervised { background: #d4edda; color: #155724; }
+        .badge-unsupervised { background: #fff3cd; color: #856404; }
         .graph-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 30px; }
         .graph-item { text-align: center; }
         .graph-item img { max-width: 100%; border: 1px solid #ddd; border-radius: 4px; background: white; padding: 5px; }
@@ -32,71 +36,118 @@
 
     <div class="container">
         <header>
-            <h1>Model Performance & Comparison</h1>
-            <p>Evaluating Accuracy and Efficiency across Multiple Algorithms</p>
+            <h1>Model Performance &amp; Comparison</h1>
+            <p>Evaluating Supervised &amp; Unsupervised Algorithms</p>
         </header>
 
+        <!-- ========== SECTION 1: SUPERVISED MODEL METRICS ========== -->
         <div class="section">
-            <h2>1. Key Performance Metrics</h2>
+            <h2>1. Supervised Model Metrics</h2>
             <div class="stats-grid">
                 <div class="stat-card">
-                    <h3>KNN</h3>
-                    <div class="stat-value">Acc: {{ (data.accuracies['KNN'] * 100) | round(2) }}%</div>
-                    <div>Prec: {{ (data.precisions['KNN'] * 100) | round(2) }}%</div>
-                    <div>Rec: {{ (data.recalls['KNN'] * 100) | round(2) }}%</div>
-                    <div>F1: {{ (data.f1_scores['KNN'] * 100) | round(2) }}%</div>
-                </div>
-                <div class="stat-card">
-                    <h3>Decision Tree</h3>
+                    <h3>Decision Tree <span class="badge badge-supervised">Supervised</span></h3>
                     <div class="stat-value">Acc: {{ (data.accuracies['Decision Tree'] * 100) | round(2) }}%</div>
                     <div>Prec: {{ (data.precisions['Decision Tree'] * 100) | round(2) }}%</div>
                     <div>Rec: {{ (data.recalls['Decision Tree'] * 100) | round(2) }}%</div>
                     <div>F1: {{ (data.f1_scores['Decision Tree'] * 100) | round(2) }}%</div>
                 </div>
                 <div class="stat-card">
-                    <h3>Random Forest</h3>
+                    <h3>Random Forest <span class="badge badge-supervised">Supervised</span></h3>
                     <div class="stat-value">Acc: {{ (data.accuracies['Random Forest'] * 100) | round(2) }}%</div>
                     <div>Prec: {{ (data.precisions['Random Forest'] * 100) | round(2) }}%</div>
                     <div>Rec: {{ (data.recalls['Random Forest'] * 100) | round(2) }}%</div>
                     <div>F1: {{ (data.f1_scores['Random Forest'] * 100) | round(2) }}%</div>
                 </div>
+                <div class="stat-card" style="border: 2px solid #f0ad4e;">
+                    <h3>K-Means <span class="badge badge-unsupervised">Unsupervised</span></h3>
+                    <div class="stat-value">Silhouette: {{ (data.kmeans.silhouette_score) | round(4) }}</div>
+                    <div class="stat-label">Score ranges from -1 (bad) to +1 (good)</div>
+                    <div style="margin-top: 8px;">Inertia: {{ data.kmeans.inertia | round(2) }}</div>
+                    <div class="stat-label">Within-cluster sum of squares</div>
+                    {% for cluster_id, count in data.kmeans.cluster_counts.items() %}
+                    <div style="margin-top: 4px;">Cluster {{ cluster_id }}: {{ count }} samples</div>
+                    {% endfor %}
+                </div>
             </div>
         </div>
 
+        <!-- ========== SECTION 2: ALL THREE METHODS COMPARISON ========== -->
         <div class="section">
-            <h2>2. Receiver Operating Characteristic (ROC) Curves</h2>
+            <h2>2. All Methods Comparison (Decision Tree vs Random Forest vs K-Means)</h2>
+            <div style="text-align: center; margin-top: 20px;">
+                <img src="{{ url_for('static', filename='all_methods_comparison.png') }}" alt="All Methods Comparison" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                <p><small>Supervised models use <strong>Accuracy</strong>; K-Means uses <strong>Cluster Purity</strong> (how well clusters align with actual labels).</small></p>
+            </div>
+        </div>
+
+        <!-- ========== SECTION 3: ROC CURVES (Supervised Only) ========== -->
+        <div class="section">
+            <h2>3. ROC Curves (Supervised Models)</h2>
             <div style="text-align: center; margin-top: 20px;">
                 <img src="{{ url_for('static', filename='roc_curves.png') }}" alt="ROC Curves" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-                <p><small>AUC Scores: KNN: {{ data.aucs['KNN'] | round(4) }}, DT: {{ data.aucs['Decision Tree'] | round(4) }}, RF: {{ data.aucs['Random Forest'] | round(4) }}</small></p>
+                <p><small>AUC Scores: DT: {{ data.aucs['Decision Tree'] | round(4) }}, RF: {{ data.aucs['Random Forest'] | round(4) }}</small></p>
             </div>
         </div>
 
+        <!-- ========== SECTION 3: MULTI-METRIC COMPARISON (Supervised) ========== -->
         <div class="section">
-            <h2>3. Model Performance Comparison</h2>
+            <h2>3. Supervised Model Performance Comparison</h2>
             <div style="text-align: center; margin-top: 20px;">
                 <img src="{{ url_for('static', filename='multi_metric_comparison.png') }}" alt="Multi-metric Comparison" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-                <p><small>Comparison of Precision, Recall, and F1-score across all three models.</small></p>
+                <p><small>Comparison of Precision, Recall, and F1-score across supervised models.</small></p>
             </div>
         </div>
 
+        <!-- ========== SECTION 4: CONFUSION MATRICES (Supervised) ========== -->
         <div class="section">
-            <h2>3. Confusion Matrices</h2>
+            <h2>4. Confusion Matrices (Supervised Models)</h2>
             <div style="text-align: center; margin-top: 20px;">
                 <img src="{{ url_for('static', filename='confusion_matrices.png') }}" alt="Confusion Matrices" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
                 <p><small>Visualizing True Positives, True Negatives, False Positives, and False Negatives.</small></p>
             </div>
         </div>
 
+        <!-- ========== SECTION 5: FEATURE IMPORTANCE (Supervised) ========== -->
         <div class="section">
-            <h2>4. Feature Importance</h2>
+            <h2>5. Feature Importance (Tree-Based Models)</h2>
             <div style="text-align: center; margin-top: 20px;">
                 <img src="{{ url_for('static', filename='feature_importance.png') }}" alt="Feature Importance" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
                 <p><small>Identifying which features contribute most to the model's decisions.</small></p>
             </div>
         </div>
 
+        <!-- ========== SECTION 6: K-MEANS CLUSTERING ANALYSIS ========== -->
         <div class="section">
-            <h2>5. Data Insights & Sensitivity</h2>
+            <h2>6. K-Means Clustering Analysis (Unsupervised)</h2>
+            <div class="graph-grid">
+                <div class="graph-item">
+                    <h3>Cluster Distribution</h3>
+                    <img src="{{ url_for('static', filename='kmeans_cluster_dist.png') }}" alt="K-Means Cluster Distribution">
+                    <p><small>Number of samples assigned to each cluster.</small></p>
+                </div>
+                <div class="graph-item">
+                    <h3>Clusters vs Actual Labels</h3>
+                    <img src="{{ url_for('static', filename='kmeans_vs_actual.png') }}" alt="K-Means vs Actual">
+                    <p><small>How well unsupervised clusters align with true disease status.</small></p>
+                </div>
+                <div class="graph-item">
+                    <h3>Elbow Method (Optimal K)</h3>
+                    <img src="{{ url_for('static', filename='kmeans_elbow.png') }}" alt="K-Means Elbow">
+                    <p><small>Inertia decreases as K increases — the "elbow" suggests the optimal number of clusters.</small></p>
+                </div>
+                <div class="graph-item">
+                    <h3>Cluster vs Actual Cross-Tabulation</h3>
+                    <div style="overflow-x: auto;">
+                        {{ data.kmeans.crosstab | safe }}
+                    </div>
+                    <p><small>Exact count of samples in each cluster mapped to actual labels.</small></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== SECTION 7: DATA INSIGHTS ========== -->
+        <div class="section">
+            <h2>7. Data Insights</h2>
             <div class="graph-grid">
                 <div class="graph-item">
                     <h3>Target Distribution</h3>
@@ -109,14 +160,9 @@
                     <p><small>Relationship between our chosen features.</small></p>
                 </div>
                 <div class="graph-item">
-                    <h3>KNN Sensitivity Analysis</h3>
-                    <img src="{{ url_for('static', filename='k_vs_acc.png') }}" alt="K vs Accuracy">
-                    <p><small>How 'K' value affects KNN performance.</small></p>
-                </div>
-                <div class="graph-item">
                     <h3>Accuracy Comparison</h3>
                     <img src="{{ url_for('static', filename='model_comparison.png') }}" alt="Model Comparison">
-                    <p><small>Direct accuracy comparison between models.</small></p>
+                    <p><small>Direct accuracy comparison between supervised models.</small></p>
                 </div>
             </div>
         </div>
