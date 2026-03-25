@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Livestock Prediction - Form</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background-color: #f4f7f6; color: #333; }
+        nav { background: #2c3e50; color: white; padding: 15px 0; text-align: center; }
+        nav a { color: #ecf0f1; text-decoration: none; margin: 0 20px; font-weight: bold; }
+        nav a:hover { color: #3498db; }
+        .container { max-width: 1000px; margin: 30px auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        header { text-align: center; border-bottom: 2px solid #eee; padding-bottom: 20px; margin-bottom: 30px; }
+        h1 { color: #2c3e50; margin: 0; }
+        h2 { color: #2c3e50; margin-top: 30px; border-bottom: 1px solid #ddd; padding-bottom: 10px; font-size: 1.25em; }
+        .form-section { margin-bottom: 40px; padding: 20px; border: 1px solid #eee; border-radius: 8px; background-color: #fafafa; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 0.85em; color: #555; }
+        input[type="number"], select { width: 100%; border: 1px solid #ddd; padding: 8px; border-radius: 4px; box-sizing: border-box; }
+        .btn-predict { display: block; width: 100%; padding: 15px; background: #3498db; color: white; border: none; font-size: 1.1em; border-radius: 4px; cursor: pointer; margin-top: 40px; }
+        .btn-predict:hover { background: #2980b9; }
+        .btn-random { background: #95a5a6; padding: 10px; width: auto; color: white; text-align: center; cursor: pointer; border-radius: 4px; display: inline-block; margin-bottom: 20px; border: none; font-size: 0.9em; }
+        .btn-random:hover { background: #7f8c8d; }
+        .prediction-result { font-weight: bold; font-size: 1.5em; text-align: center; margin-top: 30px; padding: 20px; border-radius: 8px; }
+        .healthy { background-color: #dff0d8; color: #3c763d; border: 2px solid #d6e9c6; }
+        .diseased { background-color: #f2dede; color: #a94442; border: 2px solid #ebccd1; }
+        footer { text-align: center; padding: 20px; color: #888; font-size: 0.8em; }
+        @media (max-width: 768px) {
+            .form-grid { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 480px) {
+            .form-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/">Home</a>
+        <a href="/comparison">Comparison</a>
+        <a href="/prediction">Prediction</a>
+    </nav>
+
+    <div class="container">
+        <header>
+            <h1>Predictive Diagnostics</h1>
+            <p>Input comprehensive livestock parameters for precise health status prediction</p>
+        </header>
+
+        <section class="section">
+            <div style="text-align: right;">
+                <button type="button" class="btn-random" onclick="fillRandomData()">Enter Random Data</button>
+            </div>
+
+            <form action="/predict" method="post" id="predictionForm">
+                
+                <div class="form-section">
+                    <h2>General & Location Info</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Breed:</label>
+                            <select id="Breed" name="Breed" required>
+                                {% for breed in data.dropdown_vals['Breed'] %}
+                                <option value="{{ breed }}">{{ breed }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Region:</label>
+                            <select id="Region" name="Region" required>
+                                {% for item in data.dropdown_vals['Region'] %}
+                                <option value="{{ item }}">{{ item }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Country:</label>
+                            <select id="Country" name="Country" required>
+                                {% for item in data.dropdown_vals['Country'] %}
+                                <option value="{{ item }}">{{ item }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Climate Zone:</label>
+                            <select id="Climate_Zone" name="Climate_Zone" required>
+                                {% for item in data.dropdown_vals['Climate_Zone'] %}
+                                <option value="{{ item }}">{{ item }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Management System:</label>
+                            <select id="Management_System" name="Management_System" required>
+                                {% for item in data.dropdown_vals['Management_System'] %}
+                                <option value="{{ item }}">{{ item }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Season:</label>
+                            <select id="Season" name="Season" required>
+                                {% for s in data.dropdown_vals['Season'] %}
+                                <option value="{{ s }}">{{ s }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>Biological Metrics</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Age (Months):</label>
+                            <input type="number" id="Age_Months" name="Age_Months" step="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Weight (Kg):</label>
+                            <input type="number" id="Weight_kg" name="Weight_kg" step="any" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Parity:</label>
+                            <input type="number" id="Parity" name="Parity" step="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Lactation Stage:</label>
+                            <select id="Lactation_Stage" name="Lactation_Stage" required>
+                                {% for item in data.dropdown_vals['Lactation_Stage'] %}
+                                <option value="{{ item }}">{{ item }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Days in Milk:</label>
+                            <input type="number" id="Days_in_Milk" name="Days_in_Milk" step="any" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Body Condition Score:</label>
+                            <input type="number" id="Body_Condition_Score" name="Body_Condition_Score" step="any" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>Physiological Metrics</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Body Temperature (°C):</label>
+                            <input type="number" id="Body_Temperature_C" name="Body_Temperature_C" step="any" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Heart Rate (BPM):</label>
+                            <input type="number" id="Heart_Rate_bpm" name="Heart_Rate_bpm" step="any" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Respiratory Rate:</label>
+                            <input type="number" id="Respiratory_Rate" name="Respiratory_Rate" step="any" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Walking Distance (km):</label>
+                            <input type="number" id="Walking_Distance_km" name="Walking_Distance_km" step="any" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Grazing Duration (hrs):</label>
+                            <input type="number" id="Grazing_Duration_hrs" name="Grazing_Duration_hrs" step="any" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Rumination Time (hrs):</label>
+                            <input type="number" id="Rumination_Time_hrs" name="Rumination_Time_hrs" step="any" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Resting Hours:</label>
+                            <input type="number" id="Resting_Hours" name="Resting_Hours" step="any" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>Environment & Yield</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Ambient Temp (°C):</label>
+                            <input type="number" id="Ambient_Temperature_C" name="Ambient_Temperature_C" step="any" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Humidity (%):</label>
+                            <input type="number" id="Humidity_percent" name="Humidity_percent" step="any" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Housing Score:</label>
+                            <input type="number" id="Housing_Score" name="Housing_Score" step="any" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Milk Yield (L):</label>
+                            <input type="number" id="Milk_Yield_L" name="Milk_Yield_L" step="any" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Prev Week Avg Yield:</label>
+                            <input type="number" id="Previous_Week_Avg_Yield" name="Previous_Week_Avg_Yield" step="any" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Milking Interval (hrs):</label>
+                            <input type="number" id="Milking_Interval_hrs" name="Milking_Interval_hrs" step="any" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>Nutrition</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Feed Type:</label>
+                            <select id="Feed_Type" name="Feed_Type" required>
+                                {% for ft in data.dropdown_vals['Feed_Type'] %}
+                                <option value="{{ ft }}">{{ ft }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Feed Quantity (kg):</label>
+                            <input type="number" id="Feed_Quantity_kg" name="Feed_Quantity_kg" step="any" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Water Intake (L):</label>
+                            <input type="number" id="Water_Intake_L" name="Water_Intake_L" step="any" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>Vaccination Status (1=Yes, 0=No)</h2>
+                    <div class="form-grid">
+                        <div class="form-group"><label>FMD Vaccine:</label><input type="number" id="FMD_Vaccine" name="FMD_Vaccine" min="0" max="1" step="1" required></div>
+                        <div class="form-group"><label>Brucellosis:</label><input type="number" id="Brucellosis_Vaccine" name="Brucellosis_Vaccine" min="0" max="1" step="1" required></div>
+                        <div class="form-group"><label>HS Vaccine:</label><input type="number" id="HS_Vaccine" name="HS_Vaccine" min="0" max="1" step="1" required></div>
+                        <div class="form-group"><label>BQ Vaccine:</label><input type="number" id="BQ_Vaccine" name="BQ_Vaccine" min="0" max="1" step="1" required></div>
+                        <div class="form-group"><label>Anthrax:</label><input type="number" id="Anthrax_Vaccine" name="Anthrax_Vaccine" min="0" max="1" step="1" required></div>
+                        <div class="form-group"><label>IBR Vaccine:</label><input type="number" id="IBR_Vaccine" name="IBR_Vaccine" min="0" max="1" step="1" required></div>
+                        <div class="form-group"><label>BVD Vaccine:</label><input type="number" id="BVD_Vaccine" name="BVD_Vaccine" min="0" max="1" step="1" required></div>
+                        <div class="form-group"><label>Rabies:</label><input type="number" id="Rabies_Vaccine" name="Rabies_Vaccine" min="0" max="1" step="1" required></div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-predict">Predict Livestock Status</button>
+            </form>
+
+            {% if prediction_text %}
+            <div class="prediction-result {% if 'Healthy' in prediction_text %}healthy{% else %}diseased{% endif %}">
+                {{ prediction_text }}
+            </div>
+            {% endif %}
+        </section>
+    </div>
+
+    <footer>
+        &copy; 2026 Livestock Health Monitoring System
+    </footer>
+
+    <script>
+        async function fillRandomData() {
+            try {
+                const response = await fetch('/get_random_data');
+                const randomRow = await response.json();
+                
+                for (const key in randomRow) {
+                    const field = document.getElementById(key);
+                    if (field) {
+                        field.value = randomRow[key];
+                    }
+                }
+            } catch (error) {
+                console.error("Error fetching random data:", error);
+            }
+        }
+    </script>
+</body>
+</html>

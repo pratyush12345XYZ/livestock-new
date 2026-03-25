@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Livestock Prediction - Home</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background-color: #f4f7f6; color: #333; }
+        nav { background: #2c3e50; color: white; padding: 15px 0; text-align: center; }
+        nav a { color: #ecf0f1; text-decoration: none; margin: 0 20px; font-weight: bold; }
+        nav a:hover { color: #3498db; }
+        .container { max-width: 1000px; margin: 30px auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        header { text-align: center; border-bottom: 2px solid #eee; padding-bottom: 20px; margin-bottom: 30px; }
+        h1 { color: #2c3e50; margin: 0; }
+        h2 { color: #34495e; border-left: 5px solid #3498db; padding-left: 10px; margin-top: 30px; }
+        .section { margin-bottom: 40px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 0.9em; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #f8f9fa; color: #2c3e50; }
+        .method-card { background: #fdfdfd; border: 1px solid #eee; padding: 15px; margin-bottom: 15px; border-radius: 4px; }
+        .method-card h3 { color: #3498db; margin-top: 0; }
+        footer { text-align: center; padding: 20px; color: #888; font-size: 0.8em; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/">Home</a>
+        <a href="/comparison">Comparison</a>
+        <a href="/prediction">Prediction</a>
+    </nav>
+
+    <div class="container">
+        <header>
+            <h1>Livestock Disease Prediction System</h1>
+            <p>Exploring the Cattle Disease Detection Dataset</p>
+        </header>
+
+        <div class="section">
+            <h2>1. Dataset Overview (Sample)</h2>
+            <p>Below is a sample of 10 rows from our training dataset, showing key features used for prediction.</p>
+            <div style="overflow-x: auto;">
+                {{ data.df_sample | safe }}
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>2. Methodology</h2>
+            <p>Our system utilizes three popular supervised learning algorithms for classification:</p>
+            
+            <div class="method-card">
+                <h3>K-Nearest Neighbors (KNN)</h3>
+                <p>A simple, instance-based learning algorithm that classifies a data point based on how its neighbors are classified. It is highly sensitive to the scale of features, so we apply Standard Scaling.</p>
+            </div>
+
+            <div class="method-card">
+                <h3>Decision Tree</h3>
+                <p>A tree-like model of decisions. It breaks down a dataset into smaller and smaller subsets while at the same time an associated decision tree is incrementally developed.</p>
+            </div>
+
+            <div class="method-card">
+                <h3>Random Forest</h3>
+                <p>An ensemble learning method that operates by constructing a multitude of decision trees at training time and outputting the class that is the mode of the classes of the individual trees. It is robust and usually provides the best accuracy.</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2026 Livestock Health Monitoring System
+    </footer>
+</body>
+</html>
